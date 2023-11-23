@@ -100,7 +100,7 @@ jobs:
         with:
           context: ./frontend/
           push: true
-          tags: itsmeemichka/taski_frontend:latest
+          tags: itsmeemichka/kittygram_frontend:latest
 
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
@@ -127,6 +127,7 @@ jobs:
     needs: 
       - build_and_push_to_docker_hub
       - build_gateway_and_push_to_docker_hub
+      - build_frontend_and_push_to_docker_hub
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
