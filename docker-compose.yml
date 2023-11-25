@@ -7,25 +7,30 @@ volumes:
 
 services:
   db:
+    container_name: Kittygram_database
     image: postgres:13
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    image: itsmeemichka/kittygram_backend
+    container_name: Kittygram_backend
+    build: ./backend/
     env_file: .env
     volumes:
-      - static:/backend_static
+      - static:/app/collected_static
       - media:/app/media
     depends_on:
       - db
+    command: bash -c "python manage.py migrate --no-input && python manage.py collectstatic --no-input && gunicorn --bind 0.0.0.0:8000 --workers=3 kittygram_backend.wsgi"
   frontend:
+    container_name: Kittygram_frontend
     env_file: .env
     image: itsmeemichka/kittygram_frontend
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
   gateway:
+    container_name: Kittygram_gateway
     image: itsmeemichka/kittygram_gateway
     env_file: .env
     ports:
